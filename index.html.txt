@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>全球居住地适配度测试</title>
+    <style>
+        body { font-family: 'PingFang SC', sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
+        #quiz-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; width: 100%; }
+        h1 { color: #2c3e50; text-align: center; }
+        .question { display: none; }
+        .question.active { display: block; }
+        .options-list { list-style: none; padding: 0; }
+        .option-btn { 
+            display: block; width: 100%; padding: 12px; margin: 10px 0; 
+            border: 1px solid #ddd; border-radius: 8px; cursor: pointer; 
+            transition: all 0.3s; background: #fff; text-align: left;
+        }
+        .option-btn:hover { background: #e8f4fd; border-color: #3498db; }
+        #result { display: none; text-align: center; }
+        .result-title { font-size: 24px; color: #e67e22; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h1>🌍 测测你最适合居住的国家</h1>
+    <hr>
+
+    <div id="questions">
+        <div class="question active" data-q="1">
+            <h3>1. 你理想的周末是怎样度过的？</h3>
+            <div class="options-list">
+                <button class="option-btn" onclick="next(1, 'A')">在森林或湖边徒步，享受孤独</button>
+                <button class="option-btn" onclick="next(1, 'B')">在露天餐厅和朋友喝下午茶，晒太阳</button>
+                <button class="option-btn" onclick="next(1, 'C')">去大型商场购物或参加商务社交</button>
+                <button class="option-btn" onclick="next(1, 'D')">体验最新开业的网红餐厅或深夜KTV</button>
+            </div>
+        </div>
+
+        <div class="question" data-q="2">
+            <h3>2. 关于“工作与生活”，你的态度是？</h3>
+            <div class="options-list">
+                <button class="option-btn" onclick="next(2, 'A')">工作只是为了生活，下午4点必须下班</button>
+                <button class="option-btn" onclick="next(2, 'B')">节奏慢一点没关系，效率不是唯一的指标</button>
+                <button class="option-btn" onclick="next(2, 'C')">只要钱给够，我可以接受高强度竞争</button>
+                <button class="option-btn" onclick="next(2, 'D')">极致的服务和便利比准时下班更重要</button>
+            </div>
+        </div>
+
+        <div class="question" data-q="3">
+            <h3>3. 你对气候的偏好是？</h3>
+            <div class="options-list">
+                <button class="option-btn" onclick="next(3, 'A')">喜欢寒冷、下雪和室内暖气</button>
+                <button class="option-btn" onclick="next(3, 'B')">常年阳光明媚，不介意夏天热一点</button>
+                <button class="option-btn" onclick="next(3, 'C')">气候多样化，最好有多个地带可选</button>
+                <button class="option-btn" onclick="next(3, 'D')">四季分明，但要有极其便利的公共交通体系</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result">
+        <p>经过大数据分析，最适合你的目的地是：</p>
+        <div class="result-title" id="country-name"></div>
+        <p id="country-desc" style="color: #666; margin-top: 15px;"></p>
+        <button class="option-btn" style="text-align:center; margin-top:20px;" onclick="location.reload()">重新测试</button>
+    </div>
+</div>
+
+<script>
+    let scores = { A: 0, B: 0, C: 0, D: 0 };
+    const totalQuestions = 3;
+
+    function next(currentStep, type) {
+        // 记录分数
+        scores[type]++;
+
+        // 隐藏当前问题
+        document.querySelector(`[data-q="${currentStep}"]`).classList.remove('active');
+
+        if (currentStep < totalQuestions) {
+            // 显示下一题
+            document.querySelector(`[data-q="${currentStep + 1}"]`).classList.add('active');
+        } else {
+            // 显示结果
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('questions').style.display = 'none';
+        const resultDiv = document.getElementById('result');
+        const nameDiv = document.getElementById('country-name');
+        const descDiv = document.getElementById('country-desc');
+
+        // 找到分最高的类型
+        let winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+
+        const resultsMap = {
+            'A': { name: "瑞典 / 挪威", desc: "你向往宁静与平等。北欧的极简主义和完善的社会福利能给你最大的安全感。" },
+            'B': { name: "西班牙 / 意大利", desc: "你天生属于阳光和艺术。随性的生活节奏和浓厚的人文气息才是你的本命。" },
+            'C': { name: "美国 / 加拿大", desc: "你充满了进取心或对自由的渴望。广阔的土地和多样的机会能让你大展拳脚。" },
+            'D': { name: "新加坡 / 日本", desc: "你追求极致的效率与秩序。安全的环境和现代化的都市便利让你生活得最舒心。" }
+        };
+
+        nameDiv.innerText = resultsMap[winner].name;
+        descDiv.innerText = resultsMap[winner].desc;
+        resultDiv.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
